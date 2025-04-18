@@ -1,0 +1,16 @@
+[project]
+name = "bibleqandawebsite"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "django>=5.2",
+    "django-extensions>=4.1",
+]
+
+[dependency-groups]
+prod = [
+    "gunicorn>=23.0.0",
+    "whitenoise>=6.9.0",
+]
