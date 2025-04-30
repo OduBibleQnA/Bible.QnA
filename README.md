@@ -4,3 +4,6 @@ We do a Bible study where we go through topics from questions that are asked abo
 It is to answer questions people may have about the Bible that might need explaining or are a bit confusing
 # Ultimate Goal
 Get people closer to God<br/>Answer the question or at least make sense to them
+
+
+<!-- Domain to Buy: biblicalqna.com -->

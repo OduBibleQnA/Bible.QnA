@@ -1,0 +1,17 @@
+{% extends 'form/base.html' %}
+
+{% block content %}
+<div class="container py-5 d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="card text-center bg-dark text-light shadow p-4" style="max-width: 500px;">
+    <div class="card-body">
+      <h1 class="card-title text-success">Thank You!</h1>
+      <p class="card-text">We're excited to have you share your testimony on the podcast. We'll be in touch soon with the next steps.</p>
+      
+      <div class="d-grid gap-2 mt-4">
+        <a href="{% url 'form:home' %}" class="btn btn-light">Return to Home</a>
+        <a href="{% url 'form:questionForm' %}" class="btn btn-outline-light">Ask a Question</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

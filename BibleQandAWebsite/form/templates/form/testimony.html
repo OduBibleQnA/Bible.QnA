@@ -1,0 +1,88 @@
+{% extends 'form/base.html' %}
+{% load static %}
+
+{% block metaLinks %}
+{% endblock %}
+
+{% block title %}Testimony Registraion{% endblock %}
+{% block testimonyClass %}active{% endblock %}
+
+{% block content %}
+    <p class="h3 text-light">Tell Us How God Has Worked in Your Life</p>
+
+    <form method="POST" action="{% url 'form:testimonyForm' %}">
+        {% csrf_token %}
+
+        <!-- Name Field -->
+        <div class="mb-3">
+            <div class="form-floating">
+                {{ form.name }}
+                <label for="{{ form.name.id_for_label }}">Enter Your Name<span class="text-danger">*</span></label>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <div class="form-floating position-relative">
+                {{ form.shortened_testimony }}
+                <label for="{{ form.shortened_testimony.id_for_label }}">
+                    Write a shortened version of your testimony<span class="text-danger">*</span>
+                </label>
+                <div id="word-count" class="position-absolute end-0 bottom-0 me-3 mb-2" style="font-size: 0.75rem;">
+                    0 / 300
+                </div>
+            </div>
+        
+            {% for error in form.shortened_testimony.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </div>
+        
+
+
+        <!-- Yes or No Field -->
+        <div class="mb-3">
+            <div class="form-floating">
+                {{ form.yes_or_no }}
+                <label for="{{ form.yes_or_no.id_for_label }}">Are you ok with being on camera?<span class="text-danger">*</span></label>
+            </div>
+        </div>
+
+        <!-- Contact Method Field -->
+        <div class="mb-3">
+            <div class="form-floating">
+                {{ form.contact_method }}
+                <label for="{{ form.contact_method.id_for_label }}">Preferred contact method<span class="text-danger">*</span></label>
+            </div>
+        </div>
+
+        <!-- Contact Detail Field -->
+        <div class="mb-3" id="contact-detail-group" style="display: none;">
+            <div id="contact-detail-wrapper">
+                <div class="input-group has-validation">
+                  <span id="contact-prefix" class="input-group-text visually-hidden">@</span>
+                  <div class="form-floating">
+                    {{ form.contact_detail }}
+                    <label id="contact-label" for="{{ form.contact_detail.id_for_label }}">Contact Detail<span class="text-danger">*</span></label>
+                  </div>
+                </div>
+            </div>
+              
+            
+
+            {% for error in form.contact_detail.errors %}
+                <div class="invalid-feedback d-block">
+                    {{ error }}
+                </div>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-light">Submit</button>
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'form/js/contact-method.js' %}"></script>
+    <script src="{% static 'form/js/word-count.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="icon" type="image/png" href="{% static 'favicon.ico' %}">
+    {% block metaLinks %}{% endblock %}
+    <title>{% block title %}Title{% endblock %}|Bible Q&A</title>
+</head>
+<body>
+    <nav class="navbar bg-dark border-bottom border-body ms-4 me-2">
+      <div class="container-fluid">
+        <ul class="nav nav-pills me-auto">
+          <li class="nav-item">
+            <a class="nav-link {% block homeClass %}{% endblock %}" aria-current="page" href="{% url 'form:home' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% block questionClass %}{% endblock %}" aria-current="page" href="{% url 'form:questionForm' %}">Ask Us a Question</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% block testimonyClass %}{% endblock %}" aria-current="page" href="{% url 'form:testimonyForm' %}">Give a Testimony</a>
+          </li>
+        </ul>
+        <ul class="nav nav-pills ms-auto">
+          <li class="nav-item">
+            {% if user.is_authenticated %}
+              <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+            {% else %}
+              <a class="nav-link {% block loginClass %}{% endblock %}" href="{% url 'register:login' %}">Login</a>
+            {% endif %}
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <div class="container mt-4">
+            {% block content %}{% endblock %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
