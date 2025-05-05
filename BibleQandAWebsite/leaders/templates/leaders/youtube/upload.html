@@ -1,0 +1,37 @@
+{% extends "form/base.html" %}
+{% block title %}Upload Video{% endblock %}
+{% block content %}
+<div class="container mt-5">
+  <h1 class="mb-4 text-white">Upload New YouTube Video</h1>
+  <form method="post" enctype="multipart/form-data" class=" p-4 rounded card bg-dark">
+    {% csrf_token %}
+
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="title" name="title" placeholder="Video Title" required>
+      <label for="title">Video Title<span class="text-danger">*</span></label>
+    </div>
+
+    <div class="form-floating mb-3">
+      <textarea class="form-control" id="description" name="description" placeholder="Video Description" style="height: 150px; resize: none;"></textarea>
+      <label for="description">Video Description</label>
+    </div>
+
+    <div class="form-floating mb-3">
+      <textarea class="form-control" id="hashtags" name="hashtags" placeholder=" " style="height: 80px; resize: none;"></textarea>
+      <label for="hashtags">Hashtags for Shorts (use [#], separate with spaces)</label>
+    </div>
+
+    <div class="mb-3 text-white">
+      <label for="video" class="form-label">Select Video File (MP4, MOV, etc)<span class="text-danger">*</span></label>
+      <input type="file" class="form-control" id="video" name="video" accept="video/*" required>
+    </div>
+
+    <div class="mb-4 text-white">
+        <label for="thumbnail" class="form-label">Thumbnail Image (JPG/PNG)<span class="text-danger">*</span></label>
+        <input type="file" class="form-control" id="thumbnail" name="thumbnail" accept="image/*" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100">Upload Video</button>
+  </form>
+</div>
+{% endblock %}

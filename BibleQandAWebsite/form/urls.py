@@ -9,8 +9,6 @@ urlpatterns = [
     path('form/question/', views.question_form, name='questionForm'),
     path('form/testimony', views.testimony_form_redirect, name='testimonyForm'),
     path('form/testimony/', views.testimony_form, name='testimonyForm'),
-    path('test', views.test_redirect, name='test'),
-    path('test/', views.test, name='test'),
     path('form/question/thanks/', views.question_thanks, name='questionThanks'),
     path('form/testimony/thanks/', views.testimony_thanks, name='testimonyThanks'),
 ]

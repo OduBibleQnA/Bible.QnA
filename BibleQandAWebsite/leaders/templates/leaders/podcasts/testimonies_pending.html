@@ -1,0 +1,41 @@
+{% extends "form/base.html" %}
+{% block title %}Pending Testimonies{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h2>Pending Testimonies</h2>
+  <form method="get" class="row g-3 mb-4">
+    <div class="form-floating col-md-8">
+      <input 
+        type="text" 
+        name="search" 
+        value="{{ search_query }}" 
+        class="form-control" 
+        id="floatingSearch" 
+        placeholder="Search by testimony content..."
+      >
+      <label for="floatingSearch">Search by content</label>
+    </div>
+    <div class="col-md-4">
+      <a href="{% url 'leaders:podcast:archived_testimonies' %}" class="btn btn-primary w-100 h-100 d-flex justify-content-center align-items-center">
+        Clear
+      </a>
+    </div>    
+  </form>
+  
+
+  {% for testimony in testimonies %}
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">{{ testimony.name }}</h5>
+        <p class="card-text">{{ testimony.shortened_testimony }}</p>
+        <p><strong>On Camera:</strong> {{ testimony.on_camera|yesno:"Yes,No" }}</p>
+        <p><strong>Contact:</strong> {{ testimony.contact_method }} — {{ testimony.decrypted_contact }}</p>
+        {% if not testimony.approved %}<a href="{% url 'leaders:podcast:approve_testimony' testimony.pk %}" class="btn btn-success">Approve</a>{% endif %}
+        <a href="{% url 'leaders:podcast:archive_testimony' testimony.pk %}" class="btn btn-warning">Archive</a>
+      </div>
+    </div>
+  {% empty %}
+    <p>No testimonies found.</p>
+  {% endfor %}
+</div>
+{% endblock %}

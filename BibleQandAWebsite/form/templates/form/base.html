@@ -5,35 +5,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'form/css/base.css' %}">
     <link rel="icon" type="image/png" href="{% static 'favicon.ico' %}">
     {% block metaLinks %}{% endblock %}
     <title>{% block title %}Title{% endblock %}|Bible Q&A</title>
 </head>
 <body>
-    <nav class="navbar bg-dark border-bottom border-body ms-4 me-2">
-      <div class="container-fluid">
-        <ul class="nav nav-pills me-auto">
+  <nav class="navbar navbar-expand-md bg-dark border-bottom border-body px-3">
+    <div class="container-fluid">
+      <a class="navbar-brand text-light" href="{% url 'form:home' %}">Bible Q&A</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <div class="collapse navbar-collapse" id="navbarMain">
+        <ul class="navbar-nav me-auto nav nav-pills">
           <li class="nav-item">
-            <a class="nav-link {% block homeClass %}{% endblock %}" aria-current="page" href="{% url 'form:home' %}">Home</a>
+            <a class="nav-link {% block homeClass %}{% endblock %}" href="{% url 'form:home' %}">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {% block questionClass %}{% endblock %}" aria-current="page" href="{% url 'form:questionForm' %}">Ask Us a Question</a>
+            <a class="nav-link {% block questionClass %}{% endblock %}" href="{% url 'form:questionForm' %}">Ask Us a Question</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {% block testimonyClass %}{% endblock %}" aria-current="page" href="{% url 'form:testimonyForm' %}">Give a Testimony</a>
+            <a class="nav-link {% block testimonyClass %}{% endblock %}" href="{% url 'form:testimonyForm' %}">Give a Testimony</a>
           </li>
+  
+          {% if user.is_staff %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Questions</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'leaders:core:view_questions' %}">View Questions</a></li>
+              <li><a class="dropdown-item" href="{% url 'leaders:core:archived_questions' %}">View Archived Questions</a></li>
+            </ul>
+          </li>
+          {% if is_podcaster %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">Testimonies</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'leaders:podcast:testimonies_pending' %}">View Testimony Requests</a></li>
+              <li><a class="dropdown-item" href="{% url 'leaders:podcast:archived_testimonies' %}">View Archived Testimonies</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">View Podcast Info</a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{% url 'leaders:youtube:youtube_dashboard' %}">YouTube Dashboard</a></li>
+              <li><a class="dropdown-item" href="{% url 'leaders:spotify:spotify_redirect' %}">Upload to Spotify</a></li>
+            </ul>
+          </li>
+          {% endif %}
+          {% endif %}
         </ul>
-        <ul class="nav nav-pills ms-auto">
+  
+        <!-- Login/Logout -->
+        <ul class="navbar-nav ms-auto d-none d-md-flex">
           <li class="nav-item">
             {% if user.is_authenticated %}
-              <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+              <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-link" style="text-decoration: none;">Logout</button>
+              </form>            
             {% else %}
-              <a class="nav-link {% block loginClass %}{% endblock %}" href="{% url 'register:login' %}">Login</a>
+              <a class="nav-link {% block loginClass %}{% endblock %}" href="{% url 'login' %}">Login</a>
             {% endif %}
           </li>
         </ul>
       </div>
-    </nav>
+    </div>
+  </nav>
+  
     <div class="container mt-4">
             {% block content %}{% endblock %}
     </div>

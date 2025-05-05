@@ -1,0 +1,48 @@
+{% extends 'form/base.html' %}
+{% load static %}
+{% block title %}Archived Testimonies{% endblock %}
+{% block content %}
+<div class="container mt-5">
+  <h2 class="mb-4">Archived Testimonies</h2>
+
+  <form method="get" class="row g-3 mb-4">
+    <div class="col-md-8">
+      <div class="form-floating">
+        <input type="text" class="form-control" id="search" name="search" placeholder="Search by content" value="{{ request.GET.search }}">
+        <label for="search">Search by Content</label>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <a href="{% url 'leaders:podcast:archived_testimonies' %}" class="btn btn-primary w-100 h-100 d-flex align-items-center justify-content-center">Clear</a>
+    </div>
+  </form>
+
+  {% for testimony in testimonies %}
+    <div class="card mb-3 shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">{{ testimony.name }}</h5>
+        <p class="card-text">{{ testimony.decrypted_testimony|linebreaksbr }}</p>
+
+        <p class="text-muted">
+          Contact: {{ testimony.decrypted_contact_detail }} via {{ testimony.contact_method|capfirst }} <br>
+          {% if testimony.on_camera %}✔ Willing to be on camera{% else %}✖ Not willing to be on camera{% endif %}
+        </p>
+
+        <div class="d-flex gap-2">
+          <form method="post" action="{% url 'leaders:podcast:unarchive_testimony' testimony.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success btn-sm">Unarchive</button>
+          </form>
+
+          <form method="post" action="{% url 'leaders:podcast:delete_testimony' testimony.id %}" onsubmit="return confirm('Are you sure you want to delete this testimony?');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% empty %}
+    <p>No archived testimonies found.</p>
+  {% endfor %}
+</div>
+{% endblock %}

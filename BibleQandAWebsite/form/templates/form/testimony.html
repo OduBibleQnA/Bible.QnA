@@ -44,8 +44,8 @@
         <!-- Yes or No Field -->
         <div class="mb-3">
             <div class="form-floating">
-                {{ form.yes_or_no }}
-                <label for="{{ form.yes_or_no.id_for_label }}">Are you ok with being on camera?<span class="text-danger">*</span></label>
+                {{ form.on_camera }}
+                <label for="{{ form.on_camera.id_for_label }}">Are you ok with being on camera?<span class="text-danger">*</span></label>
             </div>
         </div>
 
@@ -63,15 +63,13 @@
                 <div class="input-group has-validation">
                   <span id="contact-prefix" class="input-group-text visually-hidden">@</span>
                   <div class="form-floating">
-                    {{ form.contact_detail }}
-                    <label id="contact-label" for="{{ form.contact_detail.id_for_label }}">Contact Detail<span class="text-danger">*</span></label>
+                    {{ form.encrypted_contact_detail }}
+                    <label id="contact-label" for="{{ form.encrypted_contact_detail.id_for_label }}">Contact Detail<span class="text-danger">*</span></label>
                   </div>
                 </div>
             </div>
-              
-            
 
-            {% for error in form.contact_detail.errors %}
+            {% for error in form.encrypted_contact_detail.errors %}
                 <div class="invalid-feedback d-block">
                     {{ error }}
                 </div>
@@ -85,4 +83,5 @@
 {% block scripts %}
     <script src="{% static 'form/js/contact-method.js' %}"></script>
     <script src="{% static 'form/js/word-count.js' %}"></script>
+    <script src="{% static 'form/js/auto-resize.js' %}"></script>
 {% endblock %}

@@ -1,0 +1,45 @@
+{% extends 'form/base.html' %}
+{% load humanize %}
+{% block title %}YouTube Dashboard{% endblock %}
+
+{% block content %}
+<div class="container text-center">
+    <h2 class="mb-4">{{ title }}</h2>
+
+    <div class="row row-cols-1 row-cols-md-3 g-3 mb-4">
+        <div class="col">
+            <div class="card bg-dark text-white shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Subscribers</h5>
+                    <p class="card-text fs-4">{{ stats.subscriberCount|intcomma }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card bg-dark text-white shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Total Views</h5>
+                    <p class="card-text fs-4">{{ stats.viewCount|intcomma }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card bg-dark text-white shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Video Count</h5>
+                    <p class="card-text fs-4">{{ stats.videoCount|intcomma }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-3">
+        <a href="{% url 'leaders:youtube:youtube_upload' %}" class="btn btn-primary">
+            Upload Video
+        </a>
+        <a href="{% url 'leaders:youtube:youtube_analytics' %}" class="btn btn-success">
+            View Video Analytics
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+.card {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.btn {
+    width: 100%;
+}
+
+.text-muted-light {
+    color: #cdcdcd !important;
+}
+
+.brand-icon {
+    font-size: 1.2rem;
+    transition: transform 0.3s;
+}
+
+.youtube {
+    color: #FF0000;
+}
+
+.spotify {
+    color: #1DB954;
+}
+
+.instagram {
+    color: #E4405F;
+}
+
+.media-btn:hover .brand-icon {
+    transform: scale(1.2);
+}

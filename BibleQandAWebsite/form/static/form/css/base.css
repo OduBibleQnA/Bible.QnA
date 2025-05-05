@@ -1,0 +1,47 @@
+/* Adjust mobile nav pill spacing */
+@media (max-width: 767.98px) {
+    .navbar-nav .nav-link {
+      margin-right: 0;
+      margin-top: 0.25rem;
+    }
+    .nav-link.active{
+        padding-left: .5rem;
+        text-align: left;
+    }
+    .navbar-collapse {
+      margin-top: 0.75rem; /* creates space below the toggler */
+    }
+}
+
+@media (min-width: 576px) {
+    .nav-pills .nav-link {
+      margin-right: 3rem;  /* Adjust spacing between pills */
+    }
+}
+  
+
+/* Nav pills color (inactive and active) */
+.nav-pills .nav-link {
+    color: #8ab4f8;
+}
+
+.nav-pills .nav-link.active {
+    background-color: #2962ff;
+    color: white;
+}
+
+/* Dropdown menu styling */
+.dropdown-menu {
+    background-color: #1e1e1e;
+    border: 1px solid #444;
+}
+
+.dropdown-item {
+    color: #8ab4f8;
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+    background-color: #2962ff;
+    color: white;
+}

@@ -11,9 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-
-import gspread
-from form.services import initialize_gspread
+from os import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -40,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'form',
     'leaders',
     'register',
@@ -60,19 +59,29 @@ ROOT_URLCONF = 'bibleqanda.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "register" / "templates",],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'form.context_processor.user_groups',
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'bibleqanda.wsgi.application'
+PASSWORD_RESET_TIMEOUT = 60 * 10
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = environ.get("EMAIL_FOR_RESETS")
+EMAIL_HOST_PASSWORD = environ.get('PASSWORD_FOR_RESETS')
+DEFAULT_FROM_EMAIL = f'noreply {EMAIL_HOST_USER}'
 
 
 # Database
@@ -116,6 +125,19 @@ USE_I18N = True
 
 USE_TZ = True
 
+# Cache
+
+import os
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': os.environ.get('MEMCACHED_LOCATION', '127.0.0.1:11211'),
+    }
+}
+
+TEMP_DIR = BASE_DIR / "temp"
+TEMP_DIR.mkdir(exist_ok=True)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
@@ -130,7 +152,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 STATIC_FILES_DIRS = (
     BASE_DIR / 'form' / 'static',
     BASE_DIR / 'register' / 'static',
-    # BASE_DIR / 'register' / 'static',
+    BASE_DIR / 'leaders' / 'static',
 )
 
 # Default primary key field type
@@ -150,5 +172,3 @@ AUTO_LOGOUT = {
     'REDIRECT_TO_LOGIN_IMMEDIATELY': True,
     'MESSAGE': 'The session has expired. Please login again to continue.'
 }
-
-GSPREAD_CLIENT:gspread.client.Client = initialize_gspread()

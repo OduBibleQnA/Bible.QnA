@@ -5,6 +5,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('form.urls')),
     path('leaders/', include('leaders.urls')),
-    path('auth/', include('register.urls')),  # or whatever prefix you prefer
-
+    path('auth/', include('register.urls')),
+    path('cron/', include('cronjob.urls'))
 ]

@@ -1,0 +1,80 @@
+{% extends "form/base.html" %}
+{% block title %}Submitted Questions{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Submitted Questions</h2>
+
+<form method="get" class="row g-2 mb-4 align-items-end">
+  <div class="col-md-4">
+    <div class="form-floating">
+      <input 
+        type="text" 
+        name="search" 
+        value="{{ search_query }}" 
+        class="form-control" 
+        id="floatingSearch" 
+        placeholder="Search by question..."
+      >
+      <label for="floatingSearch">Search by question</label>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="form-floating">
+      <select 
+        name="status" 
+        class="form-select" 
+        id="floatingStatus"
+      >
+        <option value="" {% if not status_filter %}selected{% endif %}>All</option>
+        <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+        <option value="scheduled" {% if status_filter == 'scheduled' %}selected{% endif %}>Scheduled</option>
+      </select>
+      <label for="floatingStatus">Status</label>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="form-floating">
+      <select name="filter" class="form-select" id="floatingFilter">
+        <option value="">All</option>
+        <option value="unanswered" {% if request.GET.filter == 'unanswered' %}selected{% endif %}>Unanswered Only</option>
+        <option value="marked" {% if request.GET.filter == 'marked' %}selected{% endif %}>Marked Only</option>
+      </select>
+      <label for="floatingFilter">Answer Status</label>
+    </div>
+  </div>
+
+  <div class="col-md-1">
+    <button type="submit" class="btn btn-primary w-100 d-flex align-items-center justify-content-center" style="height: 58px;">Apply</button>
+  </div>
+  <div class="col-md-1">
+    <a href="{% url 'leaders:core:view_questions' %}" class="btn btn-secondary w-100 d-flex align-items-center justify-content-center" style="height: 58px;">Reset</a>
+  </div>
+</form>
+
+
+{% for question in questions %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">{{ question.first_name|default:"Anonymous" }}</h5>
+      <p class="card-text">{{ question.question }}</p>
+
+      <p class="text-muted mb-2">
+        <strong>Status:</strong>
+        {% if question.answered %}
+          <span class="badge bg-success">Answered</span>
+        {% else %}
+          <span class="badge bg-warning text-dark">Unanswered</span>
+        {% endif %}
+      </p>
+
+      <a href="{% url 'leaders:core:mark_question' question.pk %}" class="btn btn-primary">Mark for Answering</a>
+    </div>
+  </div>
+{% empty %}
+  <p>No questions found.</p>
+{% endfor %}
+
+
+{% endblock %}

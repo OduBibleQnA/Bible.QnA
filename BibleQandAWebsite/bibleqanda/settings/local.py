@@ -9,15 +9,14 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+from os import environ
 from pathlib import Path
 from dotenv import load_dotenv
-import gspread
-from form.services import initialize_gspread
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-load_dotenv()
+load_dotenv(BASE_DIR/'bibleqanda'/'settings'/'.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -39,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'form',
     'leaders',
     'register',
@@ -66,6 +66,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'form.context_processor.user_groups',
             ],
         },
     },
@@ -73,7 +74,18 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bibleqanda.wsgi.application'
 
+environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 
+PASSWORD_RESET_TIMEOUT = 60 * 30
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = environ.get("EMAIL_FOR_RESETS")
+EMAIL_HOST_PASSWORD = environ.get('PASSWORD_FOR_RESETS')
+DEFAULT_FROM_EMAIL = f'noreply {EMAIL_HOST_USER}'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
@@ -84,6 +96,15 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/Users/steve/Desktop/BibleQandAWebsite/cache/django_cache',
+    }
+}
+
+TEMP_DIR = BASE_DIR / "temp"
+TEMP_DIR.mkdir(exist_ok=True)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -130,11 +151,9 @@ STATIC_FILES_DIRS = (
 
 LOGIN_URL = '/auth/login/'
 LOGOUT_REDIRECT_URL = '/'
-LOGIN_REDIRECT_URL = 'leaders/'
+LOGIN_REDIRECT_URL = '/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-GSPREAD_CLIENT:gspread.client.Client = initialize_gspread()

@@ -1,19 +1,33 @@
-from django.contrib.auth import views as auth_views
-from django.urls import path
+from django.contrib.auth import views as reset
+from django.urls import path, include, reverse_lazy
 
+password_reset_urlpatterns = [
+    path('reset-password/', reset.PasswordResetView.as_view(
+        template_name='registration/password_reset_form.html',
+        html_email_template_name='registration/password_reset_email.html',  # THIS is key
+        subject_template_name='registration/password_reset_subject.txt',
+        success_url=reverse_lazy('password_reset_done'),
+    ), name='password_reset'),
+    
+    path("reset-password/done/", reset.PasswordResetDoneView.as_view(template_name="registration/password_reset_done.html"), name="password_reset_done"),
 
-app_name="register"
+    path('<uidb64>/<token>/', reset.PasswordResetConfirmView.as_view(
+        template_name='registration/password_reset_confirm.html'
+    ), name='password_reset_confirm'),
+    path('done/', reset.PasswordResetCompleteView.as_view(
+        template_name='registration/password_reset_complete.html'
+    ), name='password_reset_complete'),
+]
+
 urlpatterns = [
-    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='registration/logout.html'), name='logout'),
+    path('login/', reset.LoginView.as_view(), name='login'),
+    # path('logout/', auth_views.CustomLogoutView.as_view(), name='logout'),
+    path('logout/', reset.LogoutView.as_view(), name='logout'),
 
     # Password reset flow
-    path('password_reset/', auth_views.PasswordResetView.as_view(template_name='registration/password_reset_form.html'), name='password_reset'),
-    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='registration/password_reset_done.html'), name='password_reset_done'),
-    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/password_reset_confirm.html'), name='password_reset_confirm'),
-    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), name='password_reset_complete'),
+    path('reset/', include(password_reset_urlpatterns)),
 
     # Password change (for logged-in users)
-    path('password_change/', auth_views.PasswordChangeView.as_view(template_name='registration/password_change_form.html'), name='password_change'),
-    path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(template_name='registration/password_change_done.html'), name='password_change_done'),
+    path('password-change/', reset.PasswordChangeView.as_view(template_name='registration/password_change_form.html'), name='password_change'),
+    path('password-change/done/', reset.PasswordChangeDoneView.as_view(template_name='registration/password_change_done.html'), name='password_change_done'),
 ]

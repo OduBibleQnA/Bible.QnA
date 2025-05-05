@@ -1,0 +1,26 @@
+{% extends "form/base.html" %}
+{% load humanize %}
+{% block title %}YouTube Analytics{% endblock %}
+
+{% block content %}
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mt-4">
+  {% for video in videos %}
+    <div class="col">
+      <div class="card bg-dark text-white h-100">
+        <img src="{{ video.snippet.thumbnails.medium.url }}" class="card-img-top" alt="Thumbnail">
+        <div class="card-body">
+          <h5 class="card-title">{{ video.snippet.title }}</h5>
+          <p class="card-text">{{ video.snippet.description|truncatechars:100 }}</p>
+        </div>
+        <ul class="list-group list-group-flush text-white bg-dark">
+          <li class="list-group-item bg-dark text-white">Views: {{ video.statistics.viewCount|intcomma }}</li>
+          <li class="list-group-item bg-dark text-white">Likes: {{ video.statistics.likeCount|intcomma }}</li>
+          <li class="list-group-item bg-dark text-white">Published: {{ video.snippet.published_datetime|date:"j F Y" }}</li>
+        </ul>
+      </div>
+    </div>
+  {% empty %}
+    <p>No videos found.</p>
+  {% endfor %}
+</div>
+{% endblock %}

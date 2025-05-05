@@ -1,0 +1,29 @@
+{% extends "form/base.html" %}
+{% block title %}Mark Question for Answering{% endblock %}
+{% block content %}
+<h2>Mark Question for Answering</h2>
+<form method="post">
+  {% csrf_token %}
+
+  <div class="mb-3">
+    <label class="form-label">Answered</label>
+    {% for radio in form.answered %}
+      <div class="form-check">
+        {{ radio.tag }} {{ radio.choice_label }}
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="form-floating mb-3">
+    {{ form.answer_medium }}
+    <label for="{{ form.answer_medium.id_for_label }}">Answer Medium</label>
+  </div>
+
+  <div class="form-floating mb-3">
+    {{ form.answer_date }}
+    <label for="{{ form.answer_date.id_for_label }}">Answer Date</label>
+  </div>
+
+  <button type="submit" class="btn btn-success">Save</button>
+</form>
+{% endblock %}

@@ -3,19 +3,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const contactLabel = document.getElementById("contact-label");
   const contactPrefix = document.getElementById("contact-prefix");
   const contactDetailGroup = document.getElementById("contact-detail-group");
-  const contactInput = document.getElementById("id_contact_detail");
-
+  const contactInput = document.querySelector('#id_encrypted_contact_detail');
   function updateContactUI() {
     const method = methodSelect.value;
     const requiresDetail = ["instagram", "phone", "email"].includes(method);
 
-    // Show or hide the contact detail group
     contactDetailGroup.style.display = requiresDetail ? "block" : "none";
 
-    // Dynamically set required
-    contactInput.required = requiresDetail;
-
-    // Set label and prefix
     if (method === "instagram") {
       contactLabel.innerHTML = 'Instagram Username<span class="text-danger">*</span>';
       contactPrefix.classList.remove("visually-hidden");
