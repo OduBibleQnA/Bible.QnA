@@ -12,7 +12,7 @@ migrations
 .env
 
 # Database
-db.sqlite3
+# db.sqlite3
 
 # Other randomly generated things
 .DS_Store

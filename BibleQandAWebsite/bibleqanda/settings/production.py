@@ -127,12 +127,18 @@ USE_TZ = True
 
 # Cache
 
-import os
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+#         'LOCATION': environ.get('MEMCACHED_LOCATION', '127.0.0.1:11211'),
+#     }
+# }
 
+#temporary
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': os.environ.get('MEMCACHED_LOCATION', '127.0.0.1:11211'),
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': '/cache/django_cache',
     }
 }
 

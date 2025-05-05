@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import expired_questions_cleanup
+from .views import run_question_cleanup
 
 urlpatterns = [
-    path('cleanup/', expired_questions_cleanup, name='cleanup_questions'),
+    path('cleanup/', run_question_cleanup, name='cleanup_questions'),
 ]
