@@ -38,6 +38,8 @@ class Testimony(models.Model):
     encrypted_contact_detail = models.TextField()
     approved = models.BooleanField(default=False)
     archived = models.BooleanField(default=False)
+    
+
 
     def set_contact_detail(self, plain_text):
         self.encrypted_contact_detail = encrypt_contact_detail(plain_text)

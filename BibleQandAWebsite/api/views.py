@@ -1,10 +1,11 @@
+from datetime import timedelta
+from django.utils import timezone
 from rest_framework import generics
-from .serializers import QuestionSerializer, TestimonySerializer
-from .permissions import HasValidAppKey
-import secrets
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import APIKey
+from .models import ApiKey
+from .permissions import HasValidAppKey
+from .serializers import QuestionSerializer, TestimonySerializer
 
 
 class CreateQuestion(generics.CreateAPIView):
@@ -21,6 +22,15 @@ class CreateTestimony(generics.CreateAPIView):
 
 @api_view(['GET'])
 def get_api_key(request):
-    new_key = secrets.token_urlsafe(32)
-    APIKey.objects.create(key=new_key)
-    return Response({'key': new_key})
+    now = timezone.now()
+    valid_keys = ApiKey.objects.filter(expires_at__gt=now).order_by('expires_at')
+
+    if valid_keys.exists():
+        key = valid_keys.first().key
+    else:
+        new_key = ApiKey()
+        new_key.expires_at = now + timedelta(days=30)
+        new_key.save()
+        key = new_key.key
+
+    return Response({"BIBLE-QNA-APP-KEY": key})
