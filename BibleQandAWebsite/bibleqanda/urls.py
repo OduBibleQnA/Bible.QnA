@@ -8,4 +8,5 @@ urlpatterns = [
     path("auth/", include("register.urls")),
     path("cron/", include("cronjob.urls")),
     path("bibleqna/api/", include("api.urls")),
+    path("linktree/", include("linktree.urls")),
 ]

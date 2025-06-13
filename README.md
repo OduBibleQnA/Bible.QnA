@@ -6,4 +6,4 @@ It is to answer questions people may have about the Bible that might need explai
 Get people closer to God<br/>Answer the question or at least make sense to them
 
 
-<!-- Domain to Buy: biblicalqna.com -->
+<!-- Domain to Buy: bibleqna.xyz -->

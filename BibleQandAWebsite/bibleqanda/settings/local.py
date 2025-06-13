@@ -13,7 +13,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-ENCRYPTION_KEY = get_secret()
+ENCRYPTION_KEY = get_secret("ENCRYPTION_KEY_DEV")
 
 environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 

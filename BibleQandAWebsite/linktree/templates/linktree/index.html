@@ -1,0 +1,32 @@
+{% extends "forms/base.html" %}
+
+{% block title %}Links{% endblock %}
+
+{% block content %}
+<div class="text-center">
+  <!-- Logo at top like linktr.ee/bibleqna -->
+  <img src="{% static 'Threepeasofficial.png' %}" alt="Bible Q&A Logo" class="img-fluid rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+
+  <h2 class="mb-4">Bible Q&A</h2>
+
+  {% if invite %}
+  <div class="d-grid gap-3 col-10 col-md-6 mx-auto">
+    <a href="{{ invite.url }}" class="btn btn-outline-primary btn-lg" target="_blank">Join Our Discord</a>
+  </div>
+  {% else %}
+  <p class="text-muted">No active Discord invite available at the moment.</p>
+  {% endif %}
+
+  <div class="d-grid gap-3 col-10 col-md-6 mx-auto mt-4">
+    <a href="https://www.youtube.com/@3peasinapodofficial" class="btn btn-outline-danger btn-lg" target="_blank">
+      Watch Us on YouTube
+    </a>
+    <a href="https://open.spotify.com/show/xyz" class="btn btn-outline-success btn-lg" target="_blank">
+      Listen on Spotify
+    </a>
+    <a href="{% url 'form:home' %}" class="btn btn-outline-light btn-lg">
+      Visit Our Website
+    </a>
+  </div>
+</div>
+{% endblock %}

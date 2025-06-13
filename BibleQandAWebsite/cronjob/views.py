@@ -2,7 +2,7 @@ import os
 from django.http import JsonResponse, HttpResponseForbidden
 from django.utils.timezone import now
 from form.models import Question, Testimony
-from api.models import ApiKey
+from api.models import ApiKey, DiscordInvite
 from django.db.models import Q
 from datetime import timedelta
 
@@ -46,4 +46,23 @@ def rotate_api_keys(request):
         "expired_deleted": expired_count,
         "keys_created": keys_to_create,
         "total_keys": ApiKey.objects.count(),
+    })
+
+def rotate_invites(request):
+    key = request.GET.get("key")
+    expected_key = os.getenv("CRON_SECRET_KEY")
+
+    if key != expected_key:
+        return HttpResponseForbidden("Forbidden")
+
+    current_time = now()
+    expiration_cutoff = current_time - timedelta(days=3)  # 72 hours
+
+    expired_invites = DiscordInvite.objects.filter(created_at__lte=expiration_cutoff)
+    expired_count = expired_invites.count()
+    expired_invites.delete()
+
+    return JsonResponse({
+        "expired_deleted": expired_count,
+        "remaining": DiscordInvite.objects.count()
     })

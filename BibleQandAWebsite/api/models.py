@@ -20,3 +20,11 @@ class ApiKey(models.Model):
 
     def __str__(self):
         return f"API Key {self.key} (expires {self.expires_at})"
+
+
+class DiscordInvite(models.Model):
+    url = models.URLField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.url

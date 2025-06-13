@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     "leaders",
     "register",
     "api",
+    'linktree',
 ]
 
 MIDDLEWARE = [
