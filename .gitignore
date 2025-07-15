@@ -9,12 +9,20 @@ migrations
 
 # Virtual environments
 .venv
-.env
+.env*
 
 # Database
-db.sqlite3w
+db.sqlite3
 
 # Other randomly generated things
 .DS_Store
 cache
 temp
+docker-compose.yaml
+nginx.conf
+restore-db.sh
+scripts
+discord-bot
+traefik
+environment-files/
+.dockerignore

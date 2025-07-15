@@ -34,19 +34,28 @@ def rotate_api_keys(request):
     expired_keys.delete()
 
     MIN_KEYS = 5
-    current_count = ApiKey.objects.count()
-    keys_to_create = max(0, MIN_KEYS - current_count)
+    summary = {}
+    
+    for source in ["app", "bot"]:
+        valid_keys = ApiKey.objects.filter(source=source, expires_at__gt=current_time)
+        current_count = valid_keys.count()
+        keys_to_create = max(0, MIN_KEYS - current_count)
 
-    for _ in range(keys_to_create):
-        new_key = ApiKey()
-        new_key.expires_at = current_time + timedelta(days=30)
-        new_key.save()
+        for _ in range(keys_to_create):
+            new_key = ApiKey(source=source)
+            new_key.save()
+
+        summary[source] = {
+            "valid_keys": ApiKey.objects.filter(source=source, expires_at__gt=current_time).count(),
+            "created": keys_to_create,
+        }
 
     return JsonResponse({
         "expired_deleted": expired_count,
-        "keys_created": keys_to_create,
+        "per_source": summary,
         "total_keys": ApiKey.objects.count(),
     })
+
 
 def rotate_invites(request):
     key = request.GET.get("key")

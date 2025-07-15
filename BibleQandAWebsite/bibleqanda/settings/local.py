@@ -2,10 +2,8 @@ from .base import *
 from os import environ
 from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-load_dotenv(BASE_DIR / "bibleqanda" / "settings" / ".env")
+load_dotenv(BASE_DIR / ".env.local")
 
 SECRET_KEY = "django-insecure-ym*t!mlxgh@1e9uvp4+v%8#37hzy5%_$ip7$2&b3vd**w4v^&r"
 
@@ -13,7 +11,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-ENCRYPTION_KEY = get_secret("ENCRYPTION_KEY_DEV")
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+ENCRYPTION_KEY = get_secret("ENCRYPTION_KEY")
 
 environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 

@@ -1,5 +1,6 @@
 from datetime import timedelta
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -23,33 +24,18 @@ class CreateTestimony(generics.CreateAPIView):
 @api_view(['GET'])
 def get_api_key(request):
     now = timezone.now()
-    valid_keys = ApiKey.objects.filter(expires_at__gt=now).order_by('expires_at')
+    valid_keys = ApiKey.objects.filter(source='app', expires_at__gt=now).order_by('created')
 
-    if valid_keys.exists():
-        key = valid_keys.first().key
+    if valid_keys.count() >= 5:
+        key = valid_keys.first().key  # reuse oldest valid key
     else:
-        new_key = ApiKey()
-        new_key.expires_at = now + timedelta(days=30)
+        new_key = ApiKey(source='app')
         new_key.save()
         key = new_key.key
 
     return Response({"BIBLE-QNA-APP-KEY": key})
 
-@api_view(['GET'])
-def get_api_key_discord_bot(request):
-    now = timezone.now()
-    valid_keys = ApiKey.objects.filter(expires_at__gt=now).order_by('expires_at')
-
-    if valid_keys.exists():
-        key = valid_keys[2].key
-    else:
-        new_key = ApiKey()
-        new_key.expires_at = now + timedelta(days=30)
-        new_key.save()
-        key = new_key.key
-
-    return Response({"DISCORD-BOT-APP-KEY": key})
-
+@csrf_exempt
 @api_view(["POST"])
 def update_invite(request):
     api_key = request.headers.get("X-API-KEY")
@@ -57,15 +43,24 @@ def update_invite(request):
         return Response({"detail": "Missing API key"}, status=400)
 
     now = timezone.now()
-    if not ApiKey.objects.filter(key=api_key, expires_at__gt=now).exists():
-        return Response({"detail": "Unauthorized"}, status=401)
+    key_qs = ApiKey.objects.filter(key=api_key)
+
+    if not key_qs.exists():
+        return Response({"detail": "Invalid API key"}, status=401)
+
+    key = key_qs.first()
+    if key.expires_at <= now:
+        return Response({"detail": "API key expired"}, status=403)  # Use 403 for expired but valid keys
 
     url = request.data.get("url")
-    if not url:
-        return Response({"detail": "Missing 'url'"}, status=400)
+    if not url or not isinstance(url, str):
+        return Response({"detail": "Missing or invalid 'url'"}, status=400)
 
-    # Optional: only store the latest invite
     DiscordInvite.objects.all().delete()
     invite = DiscordInvite.objects.create(url=url)
 
-    return Response({"detail": "Invite stored", "id": invite.id}, status=201)
+    return Response({
+        "detail": "Invite stored",
+        "id": invite.id,
+        "url": invite.url
+    }, status=201)

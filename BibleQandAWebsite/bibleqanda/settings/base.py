@@ -58,15 +58,6 @@ WSGI_APPLICATION = "bibleqanda.wsgi.application"
 
 
 PASSWORD_RESET_TIMEOUT = 60 * 10
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-
-EMAIL_HOST_USER = get_secret("EMAIL_FOR_RESETS")
-EMAIL_HOST_PASSWORD = get_secret("PASSWORD_FOR_RESETS")
-DEFAULT_FROM_EMAIL = f"noreply {EMAIL_HOST_USER}"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
@@ -92,12 +83,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-}
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
@@ -114,9 +99,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = "static/"
+STATIC_URL = get_secret("STATIC_URL")
+
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 
 STATIC_FILES_DIRS = (
     BASE_DIR / "form" / "static",

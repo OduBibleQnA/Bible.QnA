@@ -12,8 +12,7 @@ SCOPES = [
 ]
 
 def get_youtube_flow():
-    redirect_uri = os.environ.get('GOOGLE_OAUTH_REDIRECT_URI_DEV') if settings.DEBUG else \
-                   os.environ.get('GOOGLE_OAUTH_REDIRECT_URI_PROD')
+    redirect_uri = os.environ.get('GOOGLE_OAUTH_REDIRECT_URI')
     
     return Flow.from_client_config(
         {
