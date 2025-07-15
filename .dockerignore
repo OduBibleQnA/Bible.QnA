@@ -1,0 +1,44 @@
+# Python artifacts
+__pycache__/
+*.py[co]
+*.egg-info/
+*.egg
+*.log
+
+# Build artifacts
+build/
+dist/
+wheels/
+*.tar.gz
+
+# Django stuff
+migrations/
+db.sqlite3
+media/
+
+# Virtual environments & environment files
+.venv/
+.env
+.env.*
+rclone.conf
+
+# OS / Editor / Temp
+.DS_Store
+.cache/
+temp/
+*.swp
+*.swo
+
+# Not needed inside Docker image (for multi-service setups)
+docker-compose.yaml
+nginx.conf
+restore-db.sh
+start-pt1.sh
+start-pt2.sh
+upload_static.sh
+
+# Other containers / services
+discord-bot/
+traefik/
+scripts/
+environment-files/

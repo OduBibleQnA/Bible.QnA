@@ -18,11 +18,6 @@ db.sqlite3
 .DS_Store
 cache
 temp
-docker-compose.yaml
-nginx.conf
 restore-db.sh
-scripts
 discord-bot
-traefik
 environment-files/
-.dockerignore

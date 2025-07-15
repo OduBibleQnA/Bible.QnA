@@ -1,0 +1,7 @@
+http:
+  middlewares:
+    cacheMiddleware:
+      plugin:
+        cache:
+          ttl: 3600         # Cache for 1 hour (in seconds)
+          stale: 60         # Serve stale cache for 60 seconds if backend is slow/unavailable

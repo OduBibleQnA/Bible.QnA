@@ -1,0 +1,183 @@
+version: "3.8"
+
+services:
+  traefik:
+    image: traefik:v3.0
+    container_name: traefik
+    command:
+      - "--configFile=/etc/traefik/traefik.yml"
+      - "--experimental.plugins.cache.modulename=github.com/thomas-maurice/traefik-cache-plugin"
+      - "--experimental.plugins.cache.version=v0.6.0"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik/traefik_dynamic.yml:/etc/traefik/traefik_dynamic.yml:ro
+      - ./traefik/traefik_cache_dynamic.yml:/etc/traefik/traefik_cache_dynamic.yml:ro
+      - ./traefik/acme.json:/acme.json
+    networks:
+      - bibleqna_net
+    restart: always
+    mem_limit: 256m
+
+  db:
+    image: postgres:17
+    container_name: bibleqna_db
+    expose:
+      - "5432"
+    volumes:
+      - /srv/postgres_data:/var/lib/postgresql/data
+    restart: always
+    env_file:
+      - .env.prod
+    networks:
+      - bibleqna_net
+    mem_limit: 1.5g
+
+  website:
+    image: bibleqna/bibleqna-website:latest
+    depends_on:
+      - db
+      - redis
+      - plausible
+    env_file:
+      - .env.prod
+    restart: always
+    networks:
+      - bibleqna_net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.website.rule=Host(`bibleqna.yourdomain.com`)"
+      - "traefik.http.routers.website.entrypoints=websecure"
+      - "traefik.http.routers.website.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.website.middlewares=secureHeaders@file,cacheMiddleware@file"
+    mem_limit: 1g
+
+  redis:
+    image: redis:alpine
+    restart: always
+    command: ["redis-server", "--maxmemory", "64mb", "--maxmemory-policy", "allkeys-lru"]
+    networks:
+      - bibleqna_net
+    mem_limit: 128m
+
+  resolver:
+    image: mailu/unbound:1.9
+    restart: always
+    networks:
+      - bibleqna_net
+    mem_limit: 64m
+
+  front:
+    image: mailu/nginx:1.9
+    restart: always
+    env_file: .env.mailu
+    depends_on:
+      - resolver
+    networks:
+      - bibleqna_net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.mail.rule=Host(`mail.bibleqna.domain.com`)"
+      - "traefik.http.routers.mail.entrypoints=websecure"
+      - "traefik.http.routers.mail.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.mail.middlewares=secureHeaders@file"
+    mem_limit: 256m
+
+  imap:
+    image: mailu/dovecot:1.9
+    restart: always
+    env_file: .env.mailu
+    volumes:
+      - maildata:/data
+      - ./mailu/data/overrides:/overrides
+    depends_on:
+      - front
+    networks:
+      - bibleqna_net
+    mem_limit: 512m
+
+  smtp:
+    image: mailu/postfix:1.9
+    restart: always
+    env_file: .env.mailu
+    depends_on:
+      - front
+    ports:
+      - "25:25"
+      - "587:587"
+    networks:
+      - bibleqna_net
+    mem_limit: 512m
+
+  admin:
+    image: mailu/admin:1.9
+    restart: always
+    env_file: .env.mailu
+    volumes:
+      - ./mailu/data/overrides:/overrides
+    networks:
+      - bibleqna_net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.admin.rule=Host(`admin.bibleqna.domain.com`)"
+      - "traefik.http.routers.admin.entrypoints=websecure"
+      - "traefik.http.routers.admin.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.admin.middlewares=secureHeaders@file"
+    mem_limit: 384m
+
+  webmail:
+    image: mailu/roundcube:1.9
+    restart: always
+    env_file: .env.mailu
+    depends_on:
+      - imap
+      - smtp
+    networks:
+      - bibleqna_net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.webmail.rule=Host(`webmail.bibleqna.domain.com`)"
+      - "traefik.http.routers.webmail.entrypoints=websecure"
+      - "traefik.http.routers.webmail.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.webmail.middlewares=secureHeaders@file"
+    mem_limit: 512m
+
+  plausible:
+    image: plausible/analytics:latest
+    depends_on:
+      - db
+    env_file:
+      - .env.prod
+    restart: always
+    networks:
+      - bibleqna_net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.plausible.rule=Host(`analytics.bibleqna.yourdomain.com`)"
+      - "traefik.http.routers.plausible.entrypoints=websecure"
+      - "traefik.http.routers.plausible.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.plausible.middlewares=secureHeaders@file,cacheMiddleware@file"
+    mem_limit: 1g
+  discordbot:
+    image: bibleqna/bibleqna-bot:latest
+    restart: always
+    env_file:
+      - .env.bot
+    networks:
+      - bibleqna_net
+    mem_limit: 256m
+
+volumes:
+  maildata:
+  plausible-data:
+
+networks:
+  bibleqna_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.22.1.0/24
+          gateway: 172.22.1.1
